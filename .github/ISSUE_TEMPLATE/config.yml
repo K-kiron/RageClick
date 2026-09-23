@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup and usage
+    url: https://github.com/K-kiron/RageClick/blob/main/README.md
+    about: Read installation, demo, replay, and supported-scope instructions.
+  - name: Replay plan reference
+    url: https://github.com/K-kiron/RageClick/blob/main/skills/rageclick/references/plans.md
+    about: Check the JSON plan contract, actions, limits, and replay commands.

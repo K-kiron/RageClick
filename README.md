@@ -1,18 +1,55 @@
 # RageClick
 
+![RageClick: One goal. Five ways off the happy path.](docs/assets/banner.svg)
+
+[![Verify local workflows](https://github.com/K-kiron/RageClick/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/K-kiron/RageClick/actions/workflows/verify.yml)
+[![Release](https://img.shields.io/github/v/release/K-kiron/RageClick)](https://github.com/K-kiron/RageClick/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-38634e)](LICENSE)
+
 **Let an impatient user break your local web app. Then replay the failure.**
 
-RageClick is an installable agent skill for testing what happens when a workflow is repeated, interrupted, or retried. Give your coding agent a local URL and a goal. It inspects the workflow, defines a concrete success condition, and uses a small Playwright runner to capture the operation sequence and its outcome.
+Give your coding agent a local URL and a goal. RageClick tests repeated clicks, wrong files, interrupted navigation, refreshes, and delayed retries. You get an explicit expected/actual result, real browser evidence, and a replay command that can become a regression check.
 
-![Three clicks create three projects in the intentionally broken fixture](docs/evidence/rapid-click-buggy/04-check.png)
+## Install and use
 
-**[Watch the recorded before/after demo](docs/demo.html)** · [Sample failure report](docs/evidence/rapid-click-buggy/report.md) · [Skill instructions](skills/rageclick/SKILL.md)
+From the project you want to test, with Node.js 22+ and Git installed:
+
+```sh
+npx skills add K-kiron/RageClick --skill rageclick --agent codex --copy
+npm --prefix .agents/skills/rageclick ci
+npm --prefix .agents/skills/rageclick exec -- playwright install chromium
+```
+
+Then invoke the skill in your coding host:
+
+```text
+Use $rageclick on http://127.0.0.1:3000.
+Goal: create a project and upload a brief using disposable test data.
+Check repeated clicks and invalid-file recovery.
+Keep evidence outside my repository and do not modify the application yet.
+```
+
+Codex on Windows with Chromium is the verified combination. The [Skills CLI](https://github.com/vercel-labs/skills) provides the installation route; additional hosts are not claimed as tested. If the skill is not detected, restart the host. Prefer an immutable download? Use the [release ZIP and checksum](https://github.com/K-kiron/RageClick/releases/latest), then follow its `INSTALL.md`.
+
+## See the failure, then replay the fix
+
+One submission intent. The same three native clicks with 60 ms pauses. The fixture changes from three records to one:
+
+| Buggy mode: 3 projects | Fixed mode: 1 project |
+| --- | --- |
+| ![Three duplicate project rows](docs/evidence/rapid-click-buggy/04-check.png) | ![One project after the same clicks](docs/evidence/rapid-click-fixed/04-check.png) |
+
+[**Watch the recorded demo →**](https://k-kiron.github.io/RageClick/) · [Failure report](docs/evidence/rapid-click-buggy/report.md) · [Passing report](docs/evidence/rapid-click-fixed/report.md) · [Replay plan](examples/plans/rapid-click.json)
+
+The demo plays actual recorded runs and does not execute tests against visitor-supplied applications. It also works offline after cloning: open `docs/demo.html` in a browser. These are intentionally seeded fixture defects, not evidence of performance on independent applications.
 
 ## Try the demo
 
 Requires Node.js 22+ and Chromium installed through Playwright. Node.js 24, Windows, and Chromium 145 were tested locally.
 
 ```sh
+git clone https://github.com/K-kiron/RageClick.git
+cd RageClick
 npm --prefix skills/rageclick ci
 npm --prefix skills/rageclick exec -- playwright install chromium
 npm run demo
@@ -34,7 +71,7 @@ node output/playwright/first-failure/replay.mjs --url "http://127.0.0.1:4317/?mo
 
 This command exits **0**: one project. Output directories must be new so reruns cannot silently overwrite evidence. For a different port, run `npm run demo -- --port 4327`; automated verification uses an available ephemeral port.
 
-## Install the skill
+## Manual installation
 
 From this checkout, install into the project you want to test:
 
@@ -43,15 +80,6 @@ node scripts/install-skill.mjs --workspace /absolute/path/to/your-project
 ```
 
 This copies the self-contained skill to `<your-project>/.agents/skills/rageclick` and refuses to overwrite an existing installation. Run `npm ci` and `npx playwright install chromium` in that copied directory. Restart your coding host if it does not detect the skill automatically.
-
-In Codex, invoke:
-
-```text
-Use $rageclick on http://127.0.0.1:3000.
-Goal: create a project and upload a brief using disposable test data.
-Check repeated clicks, invalid-file recovery, and interruption where applicable.
-Keep evidence outside my repository and do not modify the application yet.
-```
 
 The `.agents/skills` location follows [Codex's documented local skill discovery](https://developers.openai.com/codex/skills). Discovery and enabled metadata were checked through the local Codex 0.147.0 app-server. The copied runtime is independently installable; other coding hosts, operating systems, and browsers have not been validated.
 
@@ -110,8 +138,10 @@ This is fixture verification. There is no controlled same-model comparison again
 
 Projects such as [gstack](https://github.com/garrytan/gstack) cover broader browser QA, and [usability-test-skill](https://github.com/Rob7850/usability-test-skill) covers user-flow evaluation. RageClick focuses on replaying objective failures caused by changed interaction sequences. It uses Playwright directly and does not replace a browser automation platform.
 
-## Development
+## Contribute
 
-The skill and its runtime live in `skills/rageclick`; the three-scene fixture lives in `demo`; reproducible plans live in `examples/plans`. There are no build steps or external demo services. Keep generated run artifacts in ignored `output/` directories. Submit a minimal plan and the contract it exercises when reporting a defect; remove private data first.
+The skill and its runtime live in `skills/rageclick`; the three-scene fixture lives in `demo`; reproducible plans live in `examples/plans`. There are no build steps or external demo services. Keep generated run artifacts in ignored `output/` directories.
 
-MIT licensed. This checkout is a local release candidate; no public repository, hosted service, or release is implied by this documentation.
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), [report a reproducible bug](https://github.com/K-kiron/RageClick/issues/new?template=bug_report.yml), or [propose a focused improvement](https://github.com/K-kiron/RageClick/issues/new?template=feature_request.yml). [Changelog](CHANGELOG.md) · [MIT license](LICENSE).
+
+Repository structure and installation presentation were informed by [anthropics/skills](https://github.com/anthropics/skills), [openai/skills](https://github.com/openai/skills), and [vercel-labs/skills](https://github.com/vercel-labs/skills). RageClick's runtime, fixtures, and examples are maintained here; no endorsement or measured comparison is implied.

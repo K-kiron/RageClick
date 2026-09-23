@@ -7,7 +7,8 @@
     "demo": "node demo/server.mjs",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "verify:demo": "node scripts/verify-demo.mjs",
-    "install:skill": "node scripts/install-skill.mjs"
+    "install:skill": "node scripts/install-skill.mjs",
+    "package:skill": "node scripts/package-skill.mjs"
   },
   "engines": { "node": ">=22" }
 }

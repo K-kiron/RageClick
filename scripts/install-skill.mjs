@@ -10,7 +10,7 @@ export async function installSkill(workspace) {
   const target = resolve(workspace, '.agents', 'skills', 'rageclick');
   await mkdir(dirname(target), { recursive: true });
   await mkdir(target); // Refuse to overwrite an existing installation.
-  for (const name of ['SKILL.md', 'LICENSE', 'package.json', 'package-lock.json', 'agents', 'references', 'scripts']) {
+  for (const name of ['SKILL.md', 'INSTALL.md', 'LICENSE', 'package.json', 'package-lock.json', 'agents', 'references', 'scripts']) {
     await cp(resolve(source, name), resolve(target, name), { recursive: true, errorOnExist: true, force: false });
   }
   return target;

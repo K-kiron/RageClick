@@ -30,7 +30,7 @@ test('plans reject unbounded or executable operations before a browser starts', 
 test('installation is self-contained and refuses to overwrite a skill', async () => {
   const workspace = await mkdtemp(resolve(tmpdir(), 'rageclick-install-'));
   const installed = await installSkill(workspace);
-  for (const path of ['SKILL.md', 'LICENSE', 'references/plans.md', 'scripts/run.mjs', 'package-lock.json', 'agents/openai.yaml']) await access(resolve(installed, path));
+  for (const path of ['SKILL.md', 'INSTALL.md', 'LICENSE', 'references/plans.md', 'scripts/run.mjs', 'package-lock.json', 'agents/openai.yaml']) await access(resolve(installed, path));
   await assert.rejects(access(resolve(installed, 'node_modules')));
   await writeFile(resolve(installed, 'keep.txt'), 'user work');
   await assert.rejects(installSkill(workspace), /EEXIST/);

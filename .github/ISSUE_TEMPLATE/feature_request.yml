@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a concrete workflow or tooling improvement.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe a concrete use case and observable outcome. Use synthetic examples and omit private application data, credentials, cookies, and private traces.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Workflow and current limitation
+      description: What are you trying to verify, and what prevents the current skill or runner from doing it? Include the relevant version or commit.
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Promised invariant and desired behavior
+      description: State the observable application contract or tooling outcome. Explain the expected behavior and how it differs from what is currently possible.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Concrete example and verification
+      description: Provide an example sequence or JSON plan, the starting state and reset procedure, and expected observations. Describe how a small disposable fixture could demonstrate success.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and scope (optional)
+      description: Describe existing workarounds and any browser, network, or application assumptions the request introduces.

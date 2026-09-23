@@ -1,0 +1,61 @@
+name: Bug report
+description: Report a reproducible runner, replay, installation, or fixture problem.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide a minimal synthetic reproducer when possible. This is a public issue: review all shared content and omit private application data, credentials, cookies, and raw private traces. Evidence attachments are optional.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem and promised invariant
+      description: What should the workflow guarantee, and why does that promise apply? For installation or tooling errors, describe the expected operation.
+      placeholder: One submission intent should create exactly one project; repeated clicks create three records.
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions and environment
+      description: Include RageClick version or commit, Node.js, OS, Playwright, Chromium, and the application revision. For skill discovery problems, include the host and version.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Exact plan and command
+      description: Paste the minimal JSON replay plan and exact command in code blocks. Include a disposable fixture or steps to start one. Remove private values; for an installation problem, provide the installation command instead.
+    validations:
+      required: true
+  - type: textarea
+    id: state
+    attributes:
+      label: Starting state and reset procedure
+      description: Describe browser and application state, how each run starts fresh, and repeated-run outcomes. A fresh browser context does not reset an arbitrary application's database.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Result category
+      description: Use report.json status when available. An assertion mismatch is not the same as an execution failure.
+      options:
+        - "observed_failure (exit 1): expected/actual check differed"
+        - "execution_error (exit 2): action, prerequisite, or configuration failed"
+        - "passed (exit 0): configured checks matched"
+        - "No report produced or another problem"
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and observed result
+      description: Include expected and actual values, the relevant step or selector, and error text if present. Explain why the selector and check match the application's intended behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reviewed evidence (optional)
+      description: Link to public-safe reports or screenshots only after reviewing their contents. Do not upload raw private traces, credentials, cookies, or sensitive application data.

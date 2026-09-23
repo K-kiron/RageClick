@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "name": "rapid-click",
+  "goal": "Create exactly one project despite repeated clicks",
+  "template": "rapid-click",
+  "steps": [
+    {
+      "action": "fill",
+      "selector": "[data-testid=project-name]",
+      "value": "Field notes"
+    },
+    {
+      "action": "rapid-click",
+      "selector": "[data-testid=create-project]",
+      "count": 3,
+      "intervalMs": 60
+    },
+    {
+      "action": "wait-text",
+      "selector": "[data-testid=project-status]",
+      "text": "Ready"
+    },
+    {
+      "action": "check",
+      "kind": "count",
+      "selector": "[data-testid=project-item]",
+      "expected": 1,
+      "because": "One submission intent creates one project"
+    }
+  ]
+}

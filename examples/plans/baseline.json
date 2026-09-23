@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "name": "baseline",
+  "goal": "Create one project, upload a valid brief, and edit a draft using ordinary actions",
+  "template": "baseline",
+  "steps": [
+    {
+      "action": "fill",
+      "selector": "[data-testid=project-name]",
+      "value": "Field notes"
+    },
+    {
+      "action": "click",
+      "selector": "[data-testid=create-project]"
+    },
+    {
+      "action": "wait-text",
+      "selector": "[data-testid=project-status]",
+      "text": "Ready"
+    },
+    {
+      "action": "check",
+      "kind": "count",
+      "selector": "[data-testid=project-item]",
+      "expected": 1,
+      "because": "One submission intent creates one project"
+    },
+    {
+      "action": "upload",
+      "selector": "[data-testid=file-input]",
+      "file": {
+        "name": "brief.txt",
+        "mimeType": "text/plain",
+        "text": "A synthetic project brief."
+      }
+    },
+    {
+      "action": "click",
+      "selector": "[data-testid=upload-file]"
+    },
+    {
+      "action": "wait-text",
+      "selector": "[data-testid=upload-status]",
+      "text": "Uploaded brief.txt"
+    },
+    {
+      "action": "check",
+      "kind": "text",
+      "selector": "[data-testid=upload-status]",
+      "expected": "Uploaded brief.txt",
+      "because": "A valid brief can be uploaded"
+    },
+    {
+      "action": "fill",
+      "selector": "[data-testid=draft-title]",
+      "value": "Field notes"
+    },
+    {
+      "action": "check",
+      "kind": "value",
+      "selector": "[data-testid=draft-title]",
+      "expected": "Field notes",
+      "because": "The draft accepts edits"
+    }
+  ]
+}

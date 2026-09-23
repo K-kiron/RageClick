@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "name": "back-reenter",
+  "goal": "Keep a saved draft after visiting preview and returning",
+  "template": "back-reenter",
+  "steps": [
+    {
+      "action": "fill",
+      "selector": "[data-testid=draft-title]",
+      "value": "Field notes"
+    },
+    {
+      "action": "click",
+      "selector": "[data-testid=open-preview]"
+    },
+    {
+      "action": "back"
+    },
+    {
+      "action": "check",
+      "kind": "value",
+      "selector": "[data-testid=draft-title]",
+      "expected": "Field notes",
+      "because": "A saved draft survives interrupted navigation"
+    }
+  ]
+}

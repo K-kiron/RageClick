@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "name": "invalid-file",
+  "goal": "Recover from an unsupported file and upload a valid brief",
+  "template": "invalid-file",
+  "steps": [
+    {
+      "action": "upload",
+      "selector": "[data-testid=file-input]",
+      "file": {
+        "name": "wrong.exe",
+        "mimeType": "text/plain",
+        "text": "This is harmless synthetic text, not executable content."
+      }
+    },
+    {
+      "action": "click",
+      "selector": "[data-testid=upload-file]"
+    },
+    {
+      "action": "wait-text",
+      "selector": "[data-testid=upload-status]",
+      "text": "Unsupported file"
+    },
+    {
+      "action": "upload",
+      "selector": "[data-testid=file-input]",
+      "file": {
+        "name": "brief.txt",
+        "mimeType": "text/plain",
+        "text": "A synthetic project brief."
+      }
+    },
+    {
+      "action": "click",
+      "selector": "[data-testid=upload-file]"
+    },
+    {
+      "action": "wait",
+      "ms": 500
+    },
+    {
+      "action": "check",
+      "kind": "text",
+      "selector": "[data-testid=upload-status]",
+      "expected": "Uploaded brief.txt",
+      "because": "An invalid file must not poison the next valid upload"
+    }
+  ]
+}

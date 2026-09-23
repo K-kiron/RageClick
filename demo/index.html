@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="app-version" content="1.0.0-demo">
+  <meta name="description" content="A local testing lab for the clicks, retries, and interruptions that real users bring.">
+  <title>RageClick — Interaction lab</title>
+  <style>
+    :root{color-scheme:light;--ink:#22221e;--paper:#f2f0e7;--muted:#6d6d61;--line:#d7d6ca;--orange:#ef683d;--soft:#fffdf6;--dark:#20211d;--green:#38634e}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Trebuchet MS",Candara,sans-serif;font-size:14px;line-height:1.5}button,input,a{-webkit-tap-highlight-color:transparent}button,input{font:inherit}button,a,input{outline-offset:5px}a{color:inherit}button,a{touch-action:manipulation}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}[hidden]{display:none!important}
+    .shell{max-width:1440px;margin:auto;padding:0 56px}.masthead{background:var(--dark);color:var(--paper)}header{height:91px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff25;gap:24px}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-size:24px;letter-spacing:-1.2px;font-weight:700}.brand-mark{width:35px;height:35px;background:var(--orange);display:grid;place-items:center;color:var(--dark);transform:rotate(-5deg)}.brand-mark svg{width:22px;height:22px}.header-note{font:11px Consolas,"Courier New",monospace;letter-spacing:1.5px;text-transform:uppercase;color:#b6b7a9}.local-dot{display:inline-block;width:6px;height:6px;background:#abbf91;border-radius:50%;margin-right:8px}.hero{display:grid;grid-template-columns:1.3fr 1fr;align-items:end;gap:65px;padding-top:47px;padding-bottom:44px}.eyebrow{margin:0 0 13px;font:11px Consolas,"Courier New",monospace;letter-spacing:1.8px;text-transform:uppercase;color:var(--orange)}h1{font:normal clamp(40px,4.3vw,62px)/1.04 Georgia,"Times New Roman",serif;letter-spacing:-2.4px;margin:0}.hero-copy{margin:0 0 20px;max-width:400px;color:#c5c6b8;font-size:15px;line-height:1.65}.mode-picker{display:flex;gap:5px;padding:5px;border:1px solid #ffffff30;width:max-content}.mode-link{font-size:12px;padding:9px 15px;text-decoration:none;color:#c5c6b8;transition:background .15s}.mode-link[aria-current=page]{background:var(--orange);color:#191c15;font-weight:bold}.mode-link:hover{background:#ffffff16}.mode-link[aria-current=page]:hover{background:#ff8157}.mode-dot{display:inline-block;width:6px;height:6px;border:1px solid currentColor;border-radius:50%;margin-right:7px}.mode-link[aria-current=page] .mode-dot{background:currentColor}
+    main{padding-top:29px!important;padding-bottom:37px!important}.section-bar{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin:0 0 21px}.section-title{font-size:13px;margin:0;font-weight:normal}.section-title strong{font-weight:bold}.section-label{font:10px Consolas,"Courier New",monospace;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}.scenes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}.scene{background:var(--soft);border:1px solid var(--line);display:flex;flex-direction:column;min-height:365px;padding:25px 24px 0;animation:arrive .45s both}.scene:nth-child(2){animation-delay:.07s}.scene:nth-child(3){animation-delay:.14s}.scene-top{display:flex;justify-content:space-between;align-items:center}.scene-number{font:11px Consolas,"Courier New",monospace;color:var(--muted)}.scene-icon{width:24px;height:24px;color:var(--ink)}.scene h2{font:normal 25px/1.15 Georgia,"Times New Roman",serif;margin:18px 0 9px;letter-spacing:-.65px}.description{font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 22px;min-height:38px}.field-label{display:block;font-size:11px;font-weight:700;margin-bottom:7px}.text-input{width:100%;height:41px;background:#fffef8;border:1px solid #bdbcaf;border-radius:0;padding:10px 11px;color:var(--ink);font-size:13px}.text-input:focus{outline:2px solid var(--orange);outline-offset:2px}.primary-button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:11px 13px;border:1px solid var(--ink);background:var(--ink);color:var(--soft);font-size:12px;min-height:42px;margin-top:10px;text-decoration:none;transition:background .15s}.primary-button:hover{background:#44463b}.button-arrow{font-size:16px;line-height:1}.project-list{margin:12px 0 0;padding:0;list-style:none;max-height:116px;overflow:auto}.project-list li{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:12px;overflow-wrap:anywhere}.project-list li::before{content:"↳";color:var(--green)}.empty-message{font-size:11px;color:var(--muted);margin:11px 0 0}.status-row{display:flex;align-items:center;justify-content:space-between;gap:7px;border-top:1px solid var(--line);margin:21px -24px 0;padding:12px 24px;font:10px Consolas,"Courier New",monospace;letter-spacing:.15px;min-height:42px}.scene-body{flex:1}.status{display:flex;align-items:center;gap:6px;min-width:0;overflow-wrap:anywhere}.status::before{content:"";width:5px;height:5px;flex-shrink:0;background:var(--green);border-radius:50%}.status[data-tone=busy]::before{background:var(--orange)}.status[data-tone=error]::before{background:#b8442c}.status-meta{color:var(--muted);white-space:nowrap}.upload-input{width:100%;height:85px;padding:13px 10px;border:1px dashed #b6b6a6;background:#eeefe5;color:var(--muted);font-size:11px}.upload-input::file-selector-button{border:1px solid #a9ab9a;background:var(--soft);padding:7px 9px;margin:0 10px 7px 0;cursor:pointer;color:var(--ink);font:11px "Trebuchet MS",sans-serif}.file-note{margin:7px 0 0;color:var(--muted);font-size:10px}.draft-promise{display:flex;align-items:center;gap:6px;margin:11px 0 18px;font-size:10px;color:var(--green)}.draft-promise svg{width:13px;height:13px}.preview-link{margin-top:10px;background:transparent;color:var(--ink);border-color:#bdbcaf}.preview-link:hover{background:#ebebdf}.lab-note{display:flex;justify-content:space-between;gap:30px;margin-top:24px;padding-top:16px;border-top:1px solid #cecec0;color:var(--muted);font-size:11px}.lab-note p{margin:0}.lab-note strong{color:var(--ink);font-weight:normal}.footer-tag{font:10px Consolas,"Courier New",monospace;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}.preview{max-width:820px;margin:18px auto 60px;padding:44px;background:var(--soft);border:1px solid var(--line)}.preview h2{font:normal 36px/1.2 Georgia,serif;margin:8px 0 20px;overflow-wrap:anywhere}.preview .primary-button{width:max-content;gap:50px;margin-top:35px}.preview-label{font:10px Consolas,monospace;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted)}.preview-copy{color:var(--muted);line-height:1.7;max-width:530px}.preview-rule{height:1px;background:var(--line);margin:25px 0}.preview small{color:var(--muted)}
+    @keyframes arrive{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}@media(min-width:1600px){.hero{padding-top:62px;padding-bottom:58px}.scene{min-height:390px}}@media(max-width:1040px){.shell{padding-left:28px;padding-right:28px}.hero{gap:35px}.scene{padding-left:18px;padding-right:18px}.status-row{margin-left:-18px;margin-right:-18px;padding-left:18px;padding-right:18px}.scene h2{font-size:22px}.description{min-height:58px}}@media(max-width:760px){.shell{padding-left:20px;padding-right:20px}header{height:76px}.header-note{font-size:9px;letter-spacing:.8px}.hero{grid-template-columns:1fr;gap:25px;padding-top:32px;padding-bottom:32px}h1{font-size:44px;letter-spacing:-1.7px}.hero-copy{max-width:100%;margin-bottom:17px}.scenes{grid-template-columns:1fr}.scene{min-height:340px;padding:24px 24px 0}.description{min-height:0}.status-row{margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px}.section-bar{align-items:start}.section-label{text-align:right;max-width:135px}.lab-note{flex-direction:column;gap:15px}.preview{padding:26px}.preview h2{font-size:29px}}
+  </style>
+</head>
+<body>
+  <div class="masthead">
+    <div class="shell">
+      <header>
+        <a class="brand" id="home-link" href="/" aria-label="RageClick home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m5 3 13 10-7 1-3 7L5 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m16 4 2-2m2 7 3-1" stroke="currentColor" stroke-width="1.6"/></svg></span>RageClick<span style="color:#96998a;font-weight:normal">/ lab</span></a>
+        <span class="header-note"><span class="local-dot"></span>Local demo · v1.0.0</span>
+      </header>
+      <section class="hero" aria-labelledby="page-title">
+        <div><p class="eyebrow">An interaction testing playground</p><h1 id="page-title">The click is never<br>the whole story.</h1></div>
+        <div><p class="hero-copy">Double-click. Try again. Leave and come back.<br>Three small workflows. A little real-world friction.</p><nav class="mode-picker" aria-label="Demo mode"><a class="mode-link" data-mode="buggy" href="/?mode=buggy"><span class="mode-dot" aria-hidden="true"></span>Buggy mode</a><a class="mode-link" data-mode="fixed" href="/?mode=fixed"><span class="mode-dot" aria-hidden="true"></span>Fixed mode</a></nav></div>
+      </section>
+    </div>
+  </div>
+  <main class="shell">
+    <div id="editor">
+      <div class="section-bar"><p class="section-title"><strong>Test the promise.</strong> Change the path.</p><span class="section-label">Synthetic data / isolated session</span></div>
+      <div class="scenes">
+        <section class="scene" aria-labelledby="project-heading">
+          <div class="scene-body">
+            <div class="scene-top"><span class="scene-number">01 / REPEAT</span><svg class="scene-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8V4h4m12 12v4h-4M4 4l4 4m12 12-4-4M5 14a7 7 0 0 0 12 3M19 10A7 7 0 0 0 7 7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h2 id="project-heading">One project. One intent.</h2><p class="description">Create a project, even when a click becomes two.<br>A retry should never make a duplicate.</p>
+            <form id="project-form"><label class="field-label" for="project-name">Project name</label><input class="text-input" id="project-name" data-testid="project-name" name="name" maxlength="100" placeholder="e.g. Northstar" autocomplete="off" required><button class="primary-button" data-testid="create-project" type="submit"><span>Create project</span><span class="button-arrow" aria-hidden="true">↗</span></button></form>
+            <p class="empty-message" id="projects-empty">Your projects will appear here.</p><ul class="project-list" id="project-list" aria-label="Created projects"></ul>
+          </div>
+          <div class="status-row"><span class="status" data-testid="project-status" role="status">Ready</span><span class="status-meta" id="project-count">0 projects</span></div>
+        </section>
+        <section class="scene" aria-labelledby="upload-heading">
+          <div class="scene-body">
+            <div class="scene-top"><span class="scene-number">02 / RECOVER</span><svg class="scene-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M4 15v6h16v-6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h2 id="upload-heading">A second chance.</h2><p class="description">A wrong file should be a small detour.<br>Choose a valid file and carry on.</p>
+            <label class="field-label" for="file-input">Attach a brief</label><input id="file-input" data-testid="file-input" class="upload-input" type="file" accept=".txt" aria-describedby="file-note"><p id="file-note" class="file-note">Plain text (.txt) · up to 1 KB · stays in this browser</p><button type="button" class="primary-button" data-testid="upload-file"><span>Upload file</span><span class="button-arrow" aria-hidden="true">↑</span></button>
+          </div>
+          <div class="status-row"><span class="status" data-testid="upload-status" role="status">Ready</span><span class="status-meta">.txt / 1 KB</span></div>
+        </section>
+        <section class="scene" aria-labelledby="draft-heading">
+          <div class="scene-body">
+            <div class="scene-top"><span class="scene-number">03 / RETURN</span><svg class="scene-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3H4v18h16V8l-5-5H7Zm7 0v6h6M8 13h8m-8 4h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h2 id="draft-heading">Pick up where you left.</h2><p class="description">Write a title. Take a look at the preview.<br>Your draft should be here when you return.</p>
+            <label class="field-label" for="draft-title">Draft title</label><input id="draft-title" data-testid="draft-title" class="text-input" maxlength="160" placeholder="The next big idea" autocomplete="off"><p class="draft-promise"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 8 3 3 7-7" stroke="currentColor" stroke-width="1.6"/></svg>Draft saved on this device</p><a class="primary-button preview-link" data-testid="open-preview" id="open-preview" href="/preview"><span>Open preview</span><span class="button-arrow" aria-hidden="true">→</span></a>
+          </div>
+          <div class="status-row"><span class="status" role="status">Editor</span><span class="status-meta">Autosave enabled</span></div>
+        </section>
+      </div>
+      <div class="lab-note"><p><strong>Small actions reveal broken promises.</strong> Compare both modes using the same inputs and interactions.</p><span class="footer-tag">No accounts. No external services.</span></div>
+    </div>
+    <section id="preview" class="preview" hidden aria-labelledby="preview-title"><span class="preview-label">Draft preview</span><h2 id="preview-title">Untitled draft</h2><p class="preview-copy">This is a synthetic document preview. Your title belongs to the editor; returning should preserve the work you already did.</p><div class="preview-rule"></div><small>Only a title is stored in this demo. No file contents leave your browser.</small><a id="back-to-editor" class="primary-button" href="/"><span>Back to editor</span><span aria-hidden="true">←</span></a></section>
+  </main>
+  <script>
+    (() => {
+      const mode = new URLSearchParams(location.search).get('mode') === 'fixed' ? 'fixed' : 'buggy';
+      const fixed = mode === 'fixed';
+      const query = '?mode=' + mode;
+      const draftStorageKey = 'rageclick:fixed:draft-title';
+      document.querySelectorAll('[data-mode]').forEach(link => {
+        link.href = location.pathname + '?mode=' + link.dataset.mode;
+        if (link.dataset.mode === mode) link.setAttribute('aria-current', 'page');
+      });
+      document.querySelector('#home-link').href = '/' + query;
+      document.querySelector('#open-preview').href = '/preview' + query;
+      document.querySelector('#back-to-editor').href = '/' + query;
+      document.body.dataset.mode = mode;
+
+      if (location.pathname === '/preview') {
+        document.querySelector('#editor').hidden = true;
+        document.querySelector('#preview').hidden = false;
+        document.querySelector('#preview-title').textContent = fixed ? sessionStorage.getItem(draftStorageKey) || 'Untitled draft' : 'Untitled draft';
+        return;
+      }
+
+      const draft = document.querySelector('[data-testid="draft-title"]');
+      draft.value = fixed ? sessionStorage.getItem(draftStorageKey) || '' : '';
+      draft.addEventListener('input', () => {
+        if (fixed) sessionStorage.setItem(draftStorageKey, draft.value);
+      });
+      // History may restore form values with or without the back/forward cache.
+      // Read only persisted draft data after either kind of page restoration.
+      window.addEventListener('pageshow', () => {
+        draft.value = fixed ? sessionStorage.getItem(draftStorageKey) || '' : '';
+      });
+
+      const projectName = document.querySelector('[data-testid="project-name"]');
+      const createButton = document.querySelector('[data-testid="create-project"]');
+      const projectStatus = document.querySelector('[data-testid="project-status"]');
+      const projectList = document.querySelector('#project-list');
+      const projects = new Map();
+      let pending = 0;
+      let operationName;
+      let operationKey;
+      const renderProjects = () => {
+        projectList.replaceChildren(...Array.from(projects.values(), project => {
+          const item = document.createElement('li');
+          item.dataset.testid = 'project-item';
+          item.textContent = project.name;
+          return item;
+        }));
+        document.querySelector('#projects-empty').hidden = projects.size > 0;
+        document.querySelector('#project-count').textContent = projects.size + (projects.size === 1 ? ' project' : ' projects');
+      };
+      fetch('/api/projects' + query).then(response => {
+        if (!response.ok) throw new Error('Cannot load projects.');
+        return response.json();
+      }).then(({ projects: existing }) => {
+        existing.forEach(project => projects.set(project.id, project));
+        renderProjects();
+      }).catch(() => {
+        projectStatus.textContent = 'Could not load projects';
+        projectStatus.dataset.tone = 'error';
+      });
+      document.querySelector('#project-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const name = projectName.value.trim();
+        if (!name || (fixed && pending)) return;
+        if (name !== operationName) {
+          operationName = name;
+          operationKey = crypto.randomUUID();
+        }
+        pending += 1;
+        if (fixed) createButton.disabled = true;
+        projectStatus.textContent = 'Creating…';
+        projectStatus.dataset.tone = 'busy';
+        try {
+          const response = await fetch('/api/projects' + query, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, key: operationKey }),
+          });
+          if (!response.ok) throw new Error('Could not create project');
+          const { project } = await response.json();
+          projects.set(project.id, project);
+          renderProjects();
+        } catch {
+          document.querySelector('#projects-empty').textContent = 'Request failed. You can try again.';
+        } finally {
+          pending -= 1;
+          if (!pending) {
+            createButton.disabled = false;
+            projectStatus.textContent = 'Ready';
+            projectStatus.dataset.tone = 'ready';
+          }
+        }
+      });
+
+      const fileInput = document.querySelector('[data-testid="file-input"]');
+      const uploadButton = document.querySelector('[data-testid="upload-file"]');
+      const uploadStatus = document.querySelector('[data-testid="upload-status"]');
+      let uploadBusy = false;
+      uploadButton.addEventListener('click', async () => {
+        if (uploadBusy) return;
+        const file = fileInput.files[0];
+        if (!file) { uploadStatus.textContent = 'Choose a file'; return; }
+        uploadBusy = true;
+        if (fixed) uploadButton.disabled = true;
+        if (!/\.txt$/i.test(file.name) || file.size > 1024) {
+          uploadStatus.textContent = !/\.txt$/i.test(file.name) ? 'Unsupported file' : 'File exceeds 1 KB';
+          uploadStatus.dataset.tone = 'error';
+          if (fixed) { uploadBusy = false; uploadButton.disabled = false; }
+          return;
+        }
+        uploadStatus.textContent = 'Uploading…';
+        uploadStatus.dataset.tone = 'busy';
+        try {
+          await file.text();
+          await new Promise(resolve => setTimeout(resolve, 180));
+          uploadStatus.textContent = 'Uploaded ' + file.name;
+          uploadStatus.dataset.tone = 'ready';
+        } catch {
+          uploadStatus.textContent = 'Could not read file';
+          uploadStatus.dataset.tone = 'error';
+        } finally {
+          uploadBusy = false;
+          uploadButton.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

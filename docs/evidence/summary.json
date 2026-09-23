@@ -1,0 +1,447 @@
+{
+  "generatedAt": "2026-09-23T02:16:37.905Z",
+  "results": [
+    {
+      "id": "baseline-buggy-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "because": "One submission intent creates one project"
+        },
+        {
+          "expected": "Uploaded brief.txt",
+          "actual": "Uploaded brief.txt",
+          "passed": true,
+          "because": "A valid brief can be uploaded"
+        },
+        {
+          "expected": "Field notes",
+          "actual": "Field notes",
+          "passed": true,
+          "because": "The draft accepts edits"
+        }
+      ],
+      "report": "baseline-buggy-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "baseline-fixed-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "because": "One submission intent creates one project"
+        },
+        {
+          "expected": "Uploaded brief.txt",
+          "actual": "Uploaded brief.txt",
+          "passed": true,
+          "because": "A valid brief can be uploaded"
+        },
+        {
+          "expected": "Field notes",
+          "actual": "Field notes",
+          "passed": true,
+          "because": "The draft accepts edits"
+        }
+      ],
+      "report": "baseline-fixed-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "rapid-click-buggy-1",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 3,
+          "passed": false,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "rapid-click-buggy-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "rapid-click-buggy-2",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 3,
+          "passed": false,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "rapid-click-buggy-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "rapid-click-fixed-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "rapid-click-fixed-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "rapid-click-fixed-2",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "rapid-click-fixed-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "back-reenter-buggy-1",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "",
+          "passed": false,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "back-reenter-buggy-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "back-reenter-buggy-2",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "",
+          "passed": false,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "back-reenter-buggy-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "back-reenter-fixed-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "Field notes",
+          "passed": true,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "back-reenter-fixed-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "back-reenter-fixed-2",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "Field notes",
+          "passed": true,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "back-reenter-fixed-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "invalid-file-buggy-1",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Uploaded brief.txt",
+          "actual": "Unsupported file",
+          "passed": false,
+          "because": "An invalid file must not poison the next valid upload"
+        }
+      ],
+      "report": "invalid-file-buggy-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "invalid-file-buggy-2",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Uploaded brief.txt",
+          "actual": "Unsupported file",
+          "passed": false,
+          "because": "An invalid file must not poison the next valid upload"
+        }
+      ],
+      "report": "invalid-file-buggy-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "invalid-file-fixed-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Uploaded brief.txt",
+          "actual": "Uploaded brief.txt",
+          "passed": true,
+          "because": "An invalid file must not poison the next valid upload"
+        }
+      ],
+      "report": "invalid-file-fixed-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "invalid-file-fixed-2",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Uploaded brief.txt",
+          "actual": "Uploaded brief.txt",
+          "passed": true,
+          "because": "An invalid file must not poison the next valid upload"
+        }
+      ],
+      "report": "invalid-file-fixed-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "refresh-buggy-1",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "",
+          "passed": false,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "refresh-buggy-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "refresh-buggy-2",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "",
+          "passed": false,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "refresh-buggy-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "refresh-fixed-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "Field notes",
+          "passed": true,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "refresh-fixed-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "refresh-fixed-2",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": "Field notes",
+          "actual": "Field notes",
+          "passed": true,
+          "because": "A saved draft survives interrupted navigation"
+        }
+      ],
+      "report": "refresh-fixed-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "slow-retry-buggy-1",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 2,
+          "passed": false,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "slow-retry-buggy-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "slow-retry-buggy-2",
+      "expected": "observed_failure",
+      "actual": "observed_failure",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 2,
+          "passed": false,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "slow-retry-buggy-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "slow-retry-fixed-1",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "slow-retry-fixed-1/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    },
+    {
+      "id": "slow-retry-fixed-2",
+      "expected": "passed",
+      "actual": "passed",
+      "browserVersion": "145.0.7632.6",
+      "appVersion": "1.0.0-demo",
+      "assertions": [
+        {
+          "expected": 1,
+          "actual": 1,
+          "passed": true,
+          "because": "One submission intent creates one project"
+        }
+      ],
+      "report": "slow-retry-fixed-2/report.json",
+      "video": "video.webm",
+      "trace": "trace.zip",
+      "error": null
+    }
+  ]
+}

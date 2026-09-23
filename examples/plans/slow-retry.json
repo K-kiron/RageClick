@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "name": "slow-retry",
+  "goal": "Create one project when a delayed request invites a retry",
+  "template": "slow-retry",
+  "steps": [
+    {
+      "action": "delay-network",
+      "path": "/api/projects",
+      "delayMs": 800
+    },
+    {
+      "action": "fill",
+      "selector": "[data-testid=project-name]",
+      "value": "Field notes"
+    },
+    {
+      "action": "rapid-click",
+      "selector": "[data-testid=create-project]",
+      "count": 2,
+      "intervalMs": 500
+    },
+    {
+      "action": "wait-text",
+      "selector": "[data-testid=project-status]",
+      "text": "Ready"
+    },
+    {
+      "action": "check",
+      "kind": "count",
+      "selector": "[data-testid=project-item]",
+      "expected": 1,
+      "because": "One submission intent creates one project"
+    }
+  ]
+}

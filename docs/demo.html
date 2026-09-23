@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RageClick — The same clicks, before and after</title>
+<style>
+:root{color-scheme:light;--ink:#20211d;--paper:#f2f0e7;--orange:#ef683d}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,sans-serif}main{max-width:1420px;margin:auto;padding:50px 36px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #bbbdb1;padding-bottom:18px}.brand{font-size:23px;font-weight:750;letter-spacing:-1px}.brand b{color:var(--orange)}.tag{font:12px monospace;text-transform:uppercase;letter-spacing:1px}h1{font:normal clamp(36px,5vw,65px)/1.05 Georgia,serif;letter-spacing:-2px;margin:45px 0 18px}.intro{max-width:720px;color:#606355}.controls{display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:26px 0}button{background:var(--ink);color:var(--paper);border:0;padding:13px 20px;font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:4px}.panels{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{border:1px solid #c4c5b8;background:#fffdf6;padding:16px}.panel h2{margin:0 0 9px;font-size:17px}.panel p{margin:12px 0 0;font-size:13px}video{display:block;width:100%;background:#20211d;border:1px solid #d2d4c6}.fail{color:#b63f21}.pass{color:#38634e}a{color:inherit;text-underline-offset:3px}.proof{border-top:1px solid #bbbdb1;margin-top:32px;padding-top:23px;display:grid;grid-template-columns:1fr 1fr;gap:35px}.proof h2{font-size:16px;margin:0 0 8px}.proof p{font-size:13px;color:#606355}.steps{font:13px/1.8 monospace;background:#e6e8db;padding:16px 20px;white-space:pre-wrap}footer{font-size:12px;color:#676a5b;margin-top:35px}@media(max-width:760px){main{padding:28px 18px}.panels,.proof{grid-template-columns:1fr}.tag{font-size:10px}h1{letter-spacing:-1px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+<main>
+  <header><span class="brand"><b>↖</b> RageClick / evidence</span><span class="tag">Actual Chromium recordings</span></header>
+  <h1>The same clicks.<br>A different outcome.</h1>
+  <p class="intro">One person intends to create one project. The button receives three native pointer clicks with a configured 60 millisecond pause between them. These are recordings from the included synthetic application, using the same replay plan in both modes.</p>
+  <div class="controls"><button id="replay" type="button">Replay both recordings ↗</button><span class="tag" id="play-state" role="status">No playback speed changes</span></div>
+  <section class="panels" aria-label="Before and after recordings">
+    <article class="panel"><h2><span class="fail">Before:</span> three projects</h2><video id="before" controls muted playsinline preload="metadata" poster="evidence/rapid-click-buggy/04-check.png"><source src="evidence/rapid-click-buggy/video.webm" type="video/webm">Your browser cannot play WebM. Open the screenshot or report below.</video><p><a href="evidence/rapid-click-buggy/report.md">Read failure report</a> · <a href="evidence/rapid-click-buggy/04-check.png">Full screenshot</a></p></article>
+    <article class="panel"><h2><span class="pass">After:</span> one project</h2><video id="after" controls muted playsinline preload="metadata" poster="evidence/rapid-click-fixed/04-check.png"><source src="evidence/rapid-click-fixed/video.webm" type="video/webm">Your browser cannot play WebM. Open the screenshot or report below.</video><p><a href="evidence/rapid-click-fixed/report.md">Read passing report</a> · <a href="evidence/rapid-click-fixed/04-check.png">Full screenshot</a></p></article>
+  </section>
+  <section class="proof"><div><h2>The operation sequence</h2><div class="steps">1. Fill project name: Field notes
+2. Click three times with 60 ms pauses
+3. Wait for status: Ready
+4. Check created project count = 1</div></div><div><h2>What this establishes</h2><p>The broken fixture produces duplicates; pending-state protection and server idempotency prevent them in fixed mode. Both modes were repeated twice, and the ordinary path passes in both. The generated replay is also exercised as a regression command.</p><p><a href="verification.md">Read the complete verification record</a>. These intentionally seeded defects do not establish effectiveness on independent applications or superiority to ordinary prompting.</p></div></section>
+  <footer>Chromium 145.0.7632.6 · Playwright 1.58.2 · Demo 1.0.0-demo · Synthetic data only. Open this HTML file locally; it has no remote dependencies.</footer>
+</main>
+<script>
+document.querySelector('#replay').addEventListener('click', async () => {
+  const videos = [...document.querySelectorAll('video')];
+  videos.forEach(video => { video.pause(); video.currentTime = 0; });
+  const results = await Promise.allSettled(videos.map(video => video.play()));
+  document.querySelector('#play-state').textContent = results.every(result => result.status === 'fulfilled') ? 'Playing actual recordings' : 'Use each video control to start playback';
+});
+</script>
+</html>

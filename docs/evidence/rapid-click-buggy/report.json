@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "toolVersion": "0.1.0",
+  "name": "rapid-click",
+  "goal": "Create exactly one project despite repeated clicks",
+  "template": "rapid-click",
+  "url": "http://127.0.0.1:57202/?mode=buggy",
+  "appVersion": "1.0.0-demo",
+  "playwrightVersion": "1.58.2",
+  "browserVersion": "145.0.7632.6",
+  "nodeVersion": "v24.15.0",
+  "os": "win32 10.0.26100 x64",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "startedAt": "2026-09-23T02:15:56.371Z",
+  "planSha256": "df14a5fe52434cc8f2129fb406925a21c2579bab845b42dba4efd2974a1879d0",
+  "status": "observed_failure",
+  "steps": [
+    {
+      "index": 1,
+      "step": {
+        "action": "fill",
+        "selector": "[data-testid=project-name]",
+        "value": "Field notes"
+      },
+      "startedAt": "2026-09-23T02:15:56.805Z",
+      "screenshot": "01-fill.png",
+      "durationMs": 101
+    },
+    {
+      "index": 2,
+      "step": {
+        "action": "rapid-click",
+        "selector": "[data-testid=create-project]",
+        "count": 3,
+        "intervalMs": 60
+      },
+      "startedAt": "2026-09-23T02:15:56.906Z",
+      "position": {
+        "x": 271,
+        "y": 667.90625
+      },
+      "screenshot": "02-rapid-click.png",
+      "durationMs": 494
+    },
+    {
+      "index": 3,
+      "step": {
+        "action": "wait-text",
+        "selector": "[data-testid=project-status]",
+        "text": "Ready"
+      },
+      "startedAt": "2026-09-23T02:15:57.400Z",
+      "screenshot": "03-wait-text.png",
+      "durationMs": 477
+    },
+    {
+      "index": 4,
+      "step": {
+        "action": "check",
+        "kind": "count",
+        "selector": "[data-testid=project-item]",
+        "expected": 1,
+        "because": "One submission intent creates one project"
+      },
+      "startedAt": "2026-09-23T02:15:57.876Z",
+      "observation": {
+        "expected": 1,
+        "actual": 3,
+        "passed": false,
+        "because": "One submission intent creates one project"
+      },
+      "screenshot": "04-check.png",
+      "durationMs": 75
+    }
+  ],
+  "consoleErrors": [],
+  "blockedRequests": [],
+  "artifactErrors": [],
+  "artifacts": {
+    "initial": "00-initial.png",
+    "trace": null,
+    "video": "video.webm"
+  },
+  "finishedAt": "2026-09-23T02:15:58.417Z",
+  "samplePackaging": {
+    "omittedTrace": "Trace omitted from this tracked sample because it contains local filesystem paths. The original local run retained a complete trace."
+  }
+}

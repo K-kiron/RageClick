@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "refresh",
+  "goal": "Keep a saved draft after a browser refresh",
+  "template": "refresh",
+  "steps": [
+    {
+      "action": "fill",
+      "selector": "[data-testid=draft-title]",
+      "value": "Field notes"
+    },
+    {
+      "action": "reload"
+    },
+    {
+      "action": "check",
+      "kind": "value",
+      "selector": "[data-testid=draft-title]",
+      "expected": "Field notes",
+      "because": "A saved draft survives interrupted navigation"
+    }
+  ]
+}

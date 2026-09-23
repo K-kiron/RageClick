@@ -1,0 +1,4 @@
+interface:
+  display_name: "RageClick"
+  short_description: "Replay impatient-user failures in local web apps"
+  default_prompt: "Use $rageclick to test a local web workflow with impatient actions and produce a replayable failure report."

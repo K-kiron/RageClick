@@ -1,6 +1,6 @@
 # Contributing to RageClick
 
-RageClick tests explicit workflow contracts in disposable local applications. Contributions should preserve bounded actions, reproducible plans, and the distinction between an observed assertion failure and an execution error.
+RageClick tests explicit workflow contracts in local applications and authorized online websites. Contributions should preserve bounded actions, reproducible plans, and the distinction between an observed assertion failure and an execution error.
 
 ## Set up a checkout
 
@@ -30,6 +30,7 @@ Use `npm run demo` to inspect the fixture interactively. See the [README](README
 Use the [bug report form](https://github.com/K-kiron/RageClick/issues/new?template=bug_report.yml). Include:
 
 - The RageClick revision or version, Node.js, operating system, Playwright, Chromium, and application revision.
+- The requested URL, final URL, and `networkMode` (`loopback` or `website`), with sensitive URL values removed.
 - The exact JSON plan and command, using synthetic data and a disposable local fixture where possible.
 - The promised invariant, why it applies, and the expected and observed values.
 - The starting state, reset procedure, and results of repeated runs. A fresh browser context resets browser storage; it does not reset an arbitrary application's database.
@@ -46,6 +47,8 @@ For a new capability, use the [feature request form](https://github.com/K-kiron/
 Keep changes focused and follow the existing JavaScript module style. The runner and installable skill are in `skills/rageclick/`, the synthetic fixture is in `demo/`, and reusable plans are in `examples/plans/`.
 
 For behavior changes, add or update a minimal regression case that demonstrates the intended contract. Run `npm test` and `npm run verify:demo`, then report the commands and outcomes in the pull request. Documentation-only changes need link and command checks relevant to the edited text.
+
+Keep website networking tests reproducible with controlled HTTP fixtures where possible. The loopback mode must retain its exact-origin request guard and redirect blocking; website mode uses browser networking across origins. Do not make tests depend on a public site's availability or perform unauthorized submissions.
 
 Explain the trigger, previous behavior, and resulting behavior. Link the issue when applicable. Include an exact replay plan and reset instructions when the change concerns a workflow. State any verification you could not perform and any supported-scope changes.
 

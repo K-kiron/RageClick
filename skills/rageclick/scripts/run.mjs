@@ -24,18 +24,34 @@ function integer(value, min, max, label) {
   ensure(Number.isInteger(value) && value >= min && value <= max, `${label} must be an integer from ${min} to ${max}`);
 }
 
-export function localURL(value) {
+export function targetURL(value) {
   const url = new URL(value);
   ensure(['http:', 'https:'].includes(url.protocol), 'Only HTTP(S) targets are supported');
-  ensure(['localhost', '127.0.0.1', '[::1]'].includes(url.hostname), 'Runner accepts loopback targets only');
   ensure(!url.username && !url.password, 'Credentials in URLs are not supported');
   return url;
 }
 
-function sameOriginPath(path, base) {
+function isLoopback(url) {
+  const host = url.hostname.replace(/\.$/, '');
+  return host === 'localhost' || host.endsWith('.localhost') || host === '[::1]' || /^127(?:\.\d+){3}$/.test(host) || /^\[::ffff:7f[0-9a-f]{2}:[0-9a-f]{1,4}\]$/.test(host);
+}
+
+export function localURL(value) {
+  const url = targetURL(value);
+  ensure(isLoopback(url), 'Expected a loopback target');
+  return url;
+}
+
+function navigationURL(path, base, current = base) {
   string(path, 'path');
-  const target = new URL(path, base);
-  ensure(target.origin === base.origin && !target.username && !target.password, 'Navigation must remain on the exact allowed origin');
+  const target = targetURL(new URL(path, isLoopback(base) ? base : current));
+  ensure(!isLoopback(base) || target.origin === base.origin, 'Navigation must remain on the exact allowed origin for loopback targets');
+  return target;
+}
+
+function delayURL(path, base, current = base) {
+  const target = navigationURL(path, base, current);
+  ensure(!target.search && !target.hash && (path === target.pathname || (!isLoopback(base) && URL.canParse(path))), 'delay-network requires an exact pathname or website HTTP(S) URL without query or fragment');
   return target;
 }
 
@@ -55,10 +71,9 @@ export function validatePlan(plan, base) {
       case 'rapid-click':
         integer(step.count, 2, 5, 'click count');
         integer(step.intervalMs, 20, 500, 'click interval'); break;
-      case 'goto': sameOriginPath(step.path, base); break;
+      case 'goto': navigationURL(step.path, base); break;
       case 'delay-network': {
-        const target = sameOriginPath(step.path, base);
-        ensure(step.path === target.pathname, 'delay-network path must be an exact pathname without query');
+        delayURL(step.path, base);
         integer(step.delayMs, 0, 3000, 'network delay'); break;
       }
       case 'wait': integer(step.ms, 0, 5000, 'wait duration'); break;
@@ -121,11 +136,14 @@ async function act(page, step, state) {
       ensure(await page.evaluate(() => history.length > 1), 'No browser history to go back to');
       await page.goBack({ waitUntil: 'domcontentloaded' }); break;
     case 'reload': await page.reload({ waitUntil: 'domcontentloaded' }); break;
-    case 'goto': await page.goto(sameOriginPath(step.path, state.base).href, { waitUntil: 'domcontentloaded' }); break;
+    case 'goto': await page.goto(navigationURL(step.path, state.base, page.url()).href, { waitUntil: 'domcontentloaded' }); break;
     case 'upload':
       // Hidden native file inputs are valid upload controls.
       await page.locator(step.selector).setInputFiles({ name: step.file.name, mimeType: step.file.mimeType, buffer: Buffer.from(step.file.text) }); break;
-    case 'delay-network': state.delay = { path: step.path, ms: step.delayMs }; break;
+    case 'delay-network': {
+      const target = delayURL(step.path, state.base, page.url());
+      state.delay = { origin: target.origin, path: target.pathname, ms: step.delayMs }; break;
+    }
     case 'wait': await sleep(step.ms); break;
     case 'wait-visible': await get(); break;
     case 'wait-text': await waitText(page, step.selector, step.text); break;
@@ -160,10 +178,10 @@ function markdown(report) {
   const lines = [
     `# ${inline(report.name)}`, '', `**${report.status}** — ${inline(report.goal)}`, '',
     'An observed failure is an assertion mismatch. Repetition and contract review are required before calling it a reproducible product defect.', '',
-    `- URL: \`${inline(report.url)}\``, `- App: \`${inline(report.appVersion)}\``,
+    `- URL: \`${inline(report.url)}\``, `- Final URL: \`${inline(report.finalUrl)}\``, `- App: \`${inline(report.appVersion)}\``,
     `- Browser: Chromium ${inline(report.browserVersion)}; Playwright ${report.playwrightVersion}`,
     `- Runtime: Node ${report.nodeVersion}; ${report.os}; RageClick ${report.toolVersion}`,
-    `- Viewport: ${report.viewport.width} × ${report.viewport.height}; fresh context; exact-origin network only`,
+    `- Viewport: ${report.viewport.width} × ${report.viewport.height}; fresh context; network mode: ${report.networkMode}`,
     `- Started: ${report.startedAt}; finished: ${report.finishedAt}`,
     `- Plan SHA-256: \`${report.planSha256}\``, '',
     '| # | Action | Result | Duration | Evidence |', '| --- | --- | --- | --- | --- |'
@@ -182,7 +200,8 @@ function markdown(report) {
 }
 
 export async function runPlan({ url, plan, out, appVersion, headed = false }) {
-  const base = localURL(url);
+  const base = targetURL(url);
+  const local = isLoopback(base);
   validatePlan(plan, base);
   const serialized = JSON.stringify(plan, null, 2) + '\n';
   ensure(Buffer.byteLength(serialized) <= 524288, 'Plan exceeds 512 KiB');
@@ -193,7 +212,8 @@ export async function runPlan({ url, plan, out, appVersion, headed = false }) {
   await writeFile(resolve(directory, 'replay.mjs'), replaySource(base.href));
   const report = {
     schemaVersion: 1, toolVersion: version, name: plan.name, goal: plan.goal,
-    template: plan.template ?? 'custom', url: base.href, appVersion: appVersion ?? 'unknown',
+    template: plan.template ?? 'custom', url: base.href, finalUrl: base.href,
+    networkMode: local ? 'loopback' : 'website', appVersion: appVersion ?? 'unknown',
     playwrightVersion: require('playwright/package.json').version, browserVersion: 'unavailable',
     nodeVersion: process.version, os: `${os.platform()} ${os.release()} ${os.arch()}`,
     viewport: { width: 1440, height: 1000 }, startedAt: new Date().toISOString(),
@@ -208,18 +228,19 @@ export async function runPlan({ url, plan, out, appVersion, headed = false }) {
     report.browserVersion = browser.version();
     context = await browser.newContext({ viewport: report.viewport, serviceWorkers: 'block', acceptDownloads: false, recordVideo: { dir: directory, size: report.viewport } });
     context.setDefaultTimeout(5000);
-    context.setDefaultNavigationTimeout(10000);
+    context.setDefaultNavigationTimeout(local ? 10000 : 30000);
     await context.route('**/*', async route => {
       try {
         if (state.closing) { await route.abort(); return; }
         const requested = new URL(route.request().url());
-        if (requested.origin !== base.origin) {
+        if (local && requested.origin !== base.origin) {
           report.blockedRequests.push({ url: requested.href, reason: 'outside exact allowed origin' });
           await route.abort('blockedbyclient');
           return;
         }
-        if (state.delay?.ms && requested.pathname === state.delay.path) await sleep(state.delay.ms);
+        if (state.delay?.ms && requested.origin === state.delay.origin && requested.pathname === state.delay.path) await sleep(state.delay.ms);
         if (state.closing) { await route.abort(); return; }
+        if (!local) { await route.continue(); return; }
         // Chromium skips routing for redirect continuations. Never let it start a redirect chain.
         // No transport retry: retrying a mutation here would change the experiment itself.
         const headers = await route.request().allHeaders();
@@ -236,7 +257,7 @@ export async function runPlan({ url, plan, out, appVersion, headed = false }) {
         await route.abort('failed').catch(() => {});
       }
     });
-    await context.routeWebSocket('**/*', socket => {
+    if (local) await context.routeWebSocket('**/*', socket => {
       report.blockedRequests.push({ url: socket.url(), reason: 'WebSockets unsupported' });
       socket.close();
     });
@@ -280,6 +301,7 @@ export async function runPlan({ url, plan, out, appVersion, headed = false }) {
         row.screenshot = `${String(i + 1).padStart(2, '0')}-error.png`;
         await page.screenshot({ path: resolve(directory, row.screenshot), fullPage: true }).catch(() => { row.screenshot = null; });
       } finally {
+        row.url = page.url();
         row.durationMs = Math.round(performance.now() - start);
         report.steps.push(row);
       }
@@ -294,6 +316,7 @@ export async function runPlan({ url, plan, out, appVersion, headed = false }) {
         .catch(() => {});
     }
   } finally {
+    report.finalUrl = page?.url() ?? base.href;
     state.closing = true;
     if (tracing) {
       try { await context.tracing.stop({ path: resolve(directory, 'trace.zip') }); report.artifacts.trace = 'trace.zip'; }
@@ -329,7 +352,7 @@ export async function main(args = process.argv.slice(2)) {
     'app-version': { type: 'string' }, headed: { type: 'boolean', default: false }, help: { type: 'boolean' }
   } });
   if (values.help) {
-    console.log('RageClick: node scripts/run.mjs --url LOOPBACK_URL --plan case.json --out NEW_DIRECTORY [--app-version VERSION] [--headed]\nExit: 0 passed; 1 assertion mismatch; 2 execution/configuration error.');
+    console.log('RageClick: node scripts/run.mjs --url HTTP_OR_HTTPS_URL --plan case.json --out NEW_DIRECTORY [--app-version VERSION] [--headed]\nLoopback targets keep exact-origin isolation; websites use native browser networking.\nExit: 0 passed; 1 assertion mismatch; 2 execution/configuration error.');
     return 0;
   }
   ensure(values.url && values.plan && values.out, '--url, --plan, and --out are required');

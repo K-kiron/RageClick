@@ -19,6 +19,8 @@ Keep evidence outside the repository.
 
 Read [SKILL.md](SKILL.md) for the workflow and [references/plans.md](references/plans.md) for the runner contract. The host interprets the goal and writes a plan; the runner does not infer actions from natural language.
 
-Only test disposable, authorized loopback applications. A local server may still call a real backend. Chromium request guards do not provide an operating-system network sandbox.
+This source version also accepts online HTTP(S) targets without inline credentials. Website mode follows redirects and allows cross-origin browser requests; it starts without your existing login. The published v0.1.0 ZIP supports loopback addresses only. Use the instructions bundled with the version you install.
+
+Only test authorized websites and use disposable data for submissions. A local server may still call a real backend. Website mode has no origin request boundary, and Chromium request guards do not provide an operating-system network sandbox.
 
 Repository, demo, and release checksums: [K-kiron/RageClick](https://github.com/K-kiron/RageClick).

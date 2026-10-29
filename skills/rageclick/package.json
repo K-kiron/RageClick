@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Bounded browser perturbations with replayable evidence for local web apps.",
+  "description": "Bounded browser perturbations with replayable evidence for local and online web apps.",
   "engines": { "node": ">=22" },
   "dependencies": { "playwright": "1.58.2" }
 }

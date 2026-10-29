@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Accept credential-free HTTP(S) website URLs with native browser networking, redirects, cross-origin resources and APIs, and WebSockets. Loopback targets retain the v0.1.0 exact-origin request boundary.
+- Allow website navigation relative to the current page and bounded request delays for an explicit API URL. Record the selected network mode and final URL in evidence reports.
+- Add a read-only website smoke plan and document fresh-session behavior, navigation timeouts, and request-delay limits.
+
 ## 0.1.0 — 2026-09-23
 
 Initial public version.

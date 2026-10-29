@@ -1,4 +1,4 @@
-name: Verify local workflows
+name: Verify browser workflows
 on:
   push:
   pull_request:

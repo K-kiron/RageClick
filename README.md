@@ -2,13 +2,15 @@
 
 ![RageClick: One goal. Five ways off the happy path.](docs/assets/banner.svg)
 
-[![Verify local workflows](https://github.com/K-kiron/RageClick/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/K-kiron/RageClick/actions/workflows/verify.yml)
+[![Verify browser workflows](https://github.com/K-kiron/RageClick/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/K-kiron/RageClick/actions/workflows/verify.yml)
 [![Release](https://img.shields.io/github/v/release/K-kiron/RageClick)](https://github.com/K-kiron/RageClick/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-38634e)](LICENSE)
 
-**Let an impatient user break your local web app. Then replay the failure.**
+**Let an impatient user break your web app. Then replay the failure.**
 
-Give your coding agent a local URL and a goal. RageClick tests repeated clicks, wrong files, interrupted navigation, refreshes, and delayed retries. You get an explicit expected/actual result, real browser evidence, and a replay command that can become a regression check.
+Give your coding agent an HTTP(S) URL and a goal. RageClick tests repeated clicks, wrong files, interrupted navigation, refreshes, and delayed retries. You get an explicit expected/actual result, real browser evidence, and a replay command that can become a regression check.
+
+Website URL support described below is unreleased. The published v0.1.0 ZIP supports loopback addresses only; use the source checkout and [manual installation](#manual-installation) to try website mode.
 
 ## Install and use
 
@@ -85,6 +87,18 @@ The `.agents/skills` location follows [Codex's documented local skill discovery]
 
 **The skill interprets the goal; the CLI executes an explicit JSON plan.** The CLI does not discover buttons or infer bugs from a natural-language goal. See the [plan format](skills/rageclick/references/plans.md) when adapting it to your application.
 
+## Test an online website
+
+From this source checkout, run the supplied read-only example:
+
+```sh
+node skills/rageclick/scripts/run.mjs --url "https://example.com" --plan examples/plans/website-smoke.json --out output/playwright/website-smoke
+```
+
+The plan checks the page's `Example Domain` heading. For another website, inspect its actual UI and write a plan for the intended workflow. HTTP(S) redirects, cross-origin resources, separate API origins, and WebSockets use normal browser networking in website mode. The browser starts without an existing login; authentication challenges, CAPTCHAs, and payment workflows are not newly automated by accepting a URL.
+
+Only run actions authorized for the target site. Use disposable accounts and data for workflows that submit or change anything. A read-only smoke check does not establish that every workflow on a website is supported.
+
 ## Five perturbations, three small fixtures
 
 | Operation | Fixture | Contract under test |
@@ -101,7 +115,7 @@ The supplied application deliberately violates these contracts in buggy mode. Fi
 
 Every run produces:
 
-- `report.md` and `report.json`: app/browser/tool versions, timestamps, viewport, step durations, expected/actual observations, and execution errors.
+- `report.md` and `report.json`: requested and final URLs, network mode, app/browser/tool versions, timestamps, viewport, step durations, expected/actual observations, and execution errors.
 - `plan.json` and `replay.mjs`: exact actions with a SHA-256 plan identifier, plus a regression command.
 - Numbered screenshots, `trace.zip`, and `video.webm`: actual browser output, with missing artifacts disclosed.
 
@@ -124,15 +138,16 @@ npm run verify:demo
 
 For a project-local browser cache on Windows, set `$env:PLAYWRIGHT_BROWSERS_PATH = Join-Path $PWD '.rageclick/browsers'` before browser installation and test commands. The prepared local checkout uses this cache; a fresh clone can use Playwright's default cache with the setup commands above.
 
-The regression suite checks real browser outcomes, failure classification, zero requests reaching a second origin through redirects, generated replay behavior, and non-destructive installation. The demo matrix runs an ordinary baseline in both modes and repeats every perturbation twice in each mode: **22 browser runs**. All five buggy cases failed their assertions twice; all five fixed cases passed twice. Screenshots, traces, and videos were available for every matrix run. See [the recorded evidence](docs/verification.md).
+The regression suite checks real browser outcomes, failure classification, the loopback request boundary, website navigation, generated replay behavior, and non-destructive installation. The recorded v0.1.0 demo matrix ran an ordinary baseline in both modes and repeated every perturbation twice in each mode: **22 browser runs**. All five buggy cases failed their assertions twice; all five fixed cases passed twice. Screenshots, traces, and videos were available for every matrix run. See [the recorded evidence](docs/verification.md).
 
 This is fixture verification. There is no controlled same-model comparison against ordinary prompting and no demonstrated improvement in defect discovery, time, or quality on independent applications.
 
 ## Boundaries and current limits
 
-- Use only owned fixtures or authorized disposable local environments. A local server can still reach a real backend; establish the data boundary before submitting anything.
-- The runner accepts loopback URLs and guards the exact HTTP(S) origin. HTTP redirects, including same-origin redirects, are stopped before following them. Service workers and WebSockets are blocked. This is not an operating-system network sandbox.
-- Responses are buffered through Playwright's API transport with transport retries disabled. Streaming, bandwidth throttling, packet loss, browser cookie/credential policy validation, and multi-origin authentication are unsupported. The delay template adds a bounded request delay only.
+- Targets must be HTTP(S) URLs without inline credentials. Establish authorization and the data boundary before submitting anything; local servers can also reach real backends.
+- A loopback target selects `loopback` mode: requests stay on the exact target origin, all HTTP redirects and WebSockets are blocked, and responses are buffered through Playwright's API transport with transport retries disabled. Streaming and browser cookie/credential policy validation remain unsupported in this mode.
+- Other targets select `website` mode: the browser can follow HTTP(S) redirects and load cross-origin resources, APIs, and WebSockets. Navigation is not restricted to the initial origin. This mode provides no network isolation; service workers remain blocked in both modes.
+- Website navigation can wait up to 30 seconds; loopback navigation waits up to 10 seconds. Individual actions wait up to 5 seconds. Bounded request delays are not bandwidth throttling or packet loss, and redirected request continuations may bypass the delay.
 - Fresh browser contexts reset browser storage. They do not reset an arbitrary application's database. The included server isolates synthetic records by session cookie.
 - Trace archives and screenshots can contain private application data. Review them before sharing. Captured evidence is local by default; nothing is uploaded.
 

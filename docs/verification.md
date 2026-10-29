@@ -1,6 +1,6 @@
 # Verification record
 
-Recorded on 2026-09-23 UTC using Node.js v24.15.0, Windows 10.0.26100 x64, Playwright 1.58.2, Chromium 145.0.7632.6, and the included application version 1.0.0-demo. Both modes use the same application source with the documented defect switches.
+The original v0.1.0 verification was recorded on 2026-09-23 UTC using Node.js v24.15.0, Windows 10.0.26100 x64, Playwright 1.58.2, Chromium 145.0.7632.6, and the included application version 1.0.0-demo. Both fixture modes use the same application source with the documented defect switches. The online URL extension is verified separately below.
 
 ## Behavior matrix
 
@@ -21,7 +21,7 @@ The tracked samples include real screenshots, recordings, plans, and expected/ac
 
 Trace archives are retained in the full local matrix output but omitted from the tracked samples because they include local filesystem paths. Each sample explicitly records that packaging omission. The other report paths in summary.json are relative to the complete matrix directory; regenerate it with `npm run verify:demo` to obtain all 22 bundles.
 
-## Regression and execution checks
+## v0.1.0 regression and execution checks
 
 `npm test` passed six top-level tests and exited normally (approximately 19 seconds in the recorded final run). They exercise:
 
@@ -34,7 +34,7 @@ Trace archives are retained in the full local matrix output but omitted from the
 
 Successful process exit covers cleanup of the early navigation-failure recording paths. The runner primes a blank video frame before app navigation to avoid Playwright 1.58's zero-frame recorder cleanup defect. Browser/transport errors remain execution failures, not application findings.
 
-## Installation check
+## v0.1.0 installation check
 
 The installer copied the package into a separate test workspace. `npm ci` completed in the copied skill without relying on the source installation's node_modules. The copied runner executed the rapid-click plan against fixed mode and returned `passed`.
 
@@ -46,7 +46,17 @@ A separate page-led skill invocation constructed a plan without reading the appl
 
 The fixture defects were intentionally seeded. The fixed behavior reflects explicit fixture contracts. Two repetitions establish repeatability for these runs; they do not establish reliability across app architectures, devices, or load conditions. No controlled ordinary-prompt versus skill comparison has been performed. No performance, quality, or adoption improvement is claimed.
 
-HTTP redirects, streaming, credential/Set-Cookie policy tests, service workers, WebSockets, and remote targets are outside the runner's supported scope. Delay injection uses buffered API transport; it does not emulate full network conditions. See [the plan contract](../skills/rageclick/references/plans.md) before applying the skill elsewhere.
+In v0.1.0, HTTP redirects, streaming, credential/Set-Cookie policy tests, service workers, WebSockets, and remote targets were outside the runner's supported scope. Delay injection used buffered API transport. See [the current plan contract](../skills/rageclick/references/plans.md) for the network modes in the source version.
+
+## Online URL extension — 2026-10-29
+
+Using the same Node.js, Playwright, and Chromium versions, `npm test` passed all 12 tests. The six added tests cover HTTP(S) URL and plan validation; loopback aliases, including IPv4-mapped IPv6; saved local relative-navigation semantics; cross-origin scripts, APIs and WebSocket messages with browser CORS still enforced; canonical and cross-origin redirects followed by relative navigation; and delays restricted to the selected API origin and pathname. Browser-only DNS mappings connect the website tests to disposable local servers, so these regressions require no public website or external service.
+
+`npm run verify:demo` also completed all 22 fixture runs. Buggy and fixed cases retained their expected results, with video and trace artifacts present.
+
+A read-only live run against `https://github.com/K-kiron/RageClick` waited for and checked the README heading. Both the original run and its generated replay returned `passed` in `website` mode, with screenshots, trace and video. An initial `https://example.com` attempt returned `execution_error` because this machine could not resolve that hostname; a separate system DNS lookup confirmed the resolution failure.
+
+These checks establish the network behaviors above. They do not verify arbitrary authenticated workflows, CAPTCHA challenges, payment flows, service-worker-dependent applications, or every online website. No existing browser login was imported, and no public form was submitted.
 
 ## Repeat a sample
 

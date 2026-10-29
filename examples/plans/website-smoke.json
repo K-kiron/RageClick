@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "name": "website-smoke",
+  "goal": "Confirm the public example page renders its expected heading without changing data",
+  "template": "baseline",
+  "steps": [
+    { "action": "wait-text", "selector": "h1", "text": "Example Domain" },
+    { "action": "check", "kind": "text", "selector": "h1", "expected": "Example Domain", "because": "The example page renders its documented heading" }
+  ]
+}

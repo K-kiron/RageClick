@@ -26,9 +26,9 @@ The runner first opens `--url` (query strings are preserved), then executes step
 | `rapid-click` | `selector`, `count` (2–5), `intervalMs` (20–500) | Native pointer clicks at the same initial position. |
 | `back` | none | Browser Back; missing history is an execution error. |
 | `reload` | none | Refresh to DOMContentLoaded. |
-| `goto` | `path` | Navigate to a path on the exact allowed origin. |
+| `goto` | `path` | Loopback: navigate within the exact target origin. Website: resolve a relative path against the current page or use an absolute HTTP(S) URL. Inline credentials and non-HTTP(S) navigation are rejected. |
 | `upload` | `selector`, `file: {name, mimeType, text}` | Select synthetic inline UTF-8 file; no local file reads. |
-| `delay-network` | `path`, `delayMs` (0–3000) | Delay requests whose exact pathname matches; replaces the prior delay. Set 0 to clear. |
+| `delay-network` | `path`, `delayMs` (0–3000) | Delay an exact pathname on the page's origin when activated, or in website mode an absolute HTTP(S) URL without query/fragment. Replaces the prior delay; set 0 to clear. |
 | `wait` | `ms` (0–5000) | Fixed wait for a deliberate timing experiment. Prefer visible completion conditions. |
 | `wait-visible` | `selector` | Wait up to 5 seconds for one visible element. |
 | `wait-text` | `selector`, `text` | Wait up to 5 seconds for exact trimmed text. |
@@ -36,11 +36,19 @@ The runner first opens `--url` (query strings are preserved), then executes step
 
 Checks are immediate observations; place a meaningful completion wait before them. A text/value check with a missing or ambiguous selector is an execution error. A count check can legitimately observe zero. Incorrect selectors can still produce false findings, so inspect the screenshots and confirm the contract before reporting a product bug. Browser console errors are context, not standalone findings.
 
-Limits: 60 steps, 10 checks, 32 KiB per string, 64 KiB per inline file, 512 KiB plan input. The browser receives no existing cookies, profile, or storage state. Routed HTTP(S) requests are restricted to the exact loopback origin. HTTP redirects are aborted before following any Location, including same-origin redirects; Chromium otherwise bypasses request routing on redirect continuations. Responses are buffered with a 10-second timeout and transport retries disabled. Streaming responses are unsupported. WebSockets and service workers are blocked. This is a request guard, not an operating-system network sandbox; it cannot prevent the local server from calling external systems.
+Limits: 60 steps, 10 checks, 32 KiB per string, 64 KiB per inline file, 512 KiB plan input. Target and navigation URLs must use HTTP(S) without inline credentials. The browser receives no existing cookies, profile, or storage state. Service workers are blocked in both network modes, and Playwright request routing disables the HTTP cache. Navigation waits up to 10 seconds in `loopback` mode and 30 seconds in `website` mode; individual actions wait up to 5 seconds.
+
+## Network modes
+
+A loopback target selects `loopback` mode. Relative `goto` paths retain the original target URL as their base for compatibility with saved plans. Routed HTTP(S) requests stay on the exact target origin. HTTP redirects are aborted before following any Location, including same-origin redirects, and WebSockets are blocked. Responses are buffered with a 10-second timeout and transport retries disabled. Streaming and browser cookie/credential policy validation are unsupported. This request guard is not an operating-system network sandbox and cannot prevent a local server from calling external systems. A `delay-network` path must be a pathname such as `/api/projects`.
+
+Other targets select `website` mode. Requests use native browser networking; HTTP(S) redirects, cross-origin resources and APIs, and WebSockets are allowed. A redirected initial URL becomes the base for subsequent relative `goto` paths. For example, `"path": "details"` resolves against the current page, and `"path": "https://other.example.test/details"` can navigate to another site.
+
+In website mode, `delay-network` with `"path": "/api/projects"` selects the current page's origin when that step runs. To delay a separate API origin, use `"path": "https://api.example.test/projects"`. Matching uses origin and exact pathname, irrespective of a request's query string; the configured path itself must not contain a query or fragment. The selected origin stays fixed until the next `delay-network` step. Redirect continuations may bypass Playwright routing and therefore bypass the delay. This is a bounded request delay, not bandwidth throttling, packet loss, or a guarantee of every redirected request's timing.
 
 ## Output and replay
 
-`report.json` records schema/tool/Node/OS/Playwright/browser/app versions, URL, viewport, timestamps, each executed action with timings, assertion observations, console errors, blocked requests, and artifact availability. It also includes a SHA-256 of the saved plan. `report.md` is the readable equivalent. Screenshots follow each completed step, including failed assertions; interrupted actions get an error screenshot when possible. `trace.zip` and `video.webm` provide richer evidence. Generated artifacts may contain sensitive data and require review before sharing.
+`report.json` records schema/tool/Node/OS/Playwright/browser/app versions, requested URL, `finalUrl`, `networkMode` (`loopback` or `website`), viewport, timestamps, each executed action with timings, assertion observations, console errors, blocked requests, and artifact availability. It also includes a SHA-256 of the saved plan. `report.md` is the readable equivalent. Screenshots follow each completed step, including failed assertions; interrupted actions get an error screenshot when possible. `trace.zip` and `video.webm` provide richer evidence. Generated artifacts may contain sensitive data and require review before sharing.
 
 From the RageClick repository root:
 
@@ -48,7 +56,7 @@ From the RageClick repository root:
 node /path/to/evidence/replay.mjs --url http://127.0.0.1:3000 --out /path/to/new-evidence
 ```
 
-For an installed skill, add `--runner /path/to/rageclick/scripts/run.mjs`. The default runner path is `skills/rageclick/scripts/run.mjs` relative to the working directory. The replay uses the original URL unless overridden. A server must already be running and application state must be reset appropriately. Supply `--app-version` when replaying another revision; otherwise it is detected from `<meta name="app-version">` or recorded as `unknown`.
+For an installed skill, add `--runner /path/to/rageclick/scripts/run.mjs`. The default runner path is `skills/rageclick/scripts/run.mjs` relative to the working directory. The replay uses the original URL unless overridden. The target must be reachable and application state must be reset appropriately. Supply `--app-version` when replaying another revision; otherwise it is detected from `<meta name="app-version">` or recorded as `unknown`.
 
 The replay's nonzero assertion exit makes it a regression check. Include the plan and command in an existing test suite only when the invariant reflects intended product behavior. Do not commit personal data, application traces, or temporary analysis by default.
 
